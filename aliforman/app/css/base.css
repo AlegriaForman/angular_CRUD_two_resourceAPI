@@ -1,0 +1,39 @@
+body {
+  padding: 0;
+  min-width: 320px;
+  max-width: 1040px;
+  font-family: "Rosarivo", Serif;
+  font-size: 1.3em;
+}
+button {
+  font-size: .8em;
+  background-color: #E0E0E0;
+  font-weight: bold;
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: 10px;
+  border-color: solid 2px #000066;
+}
+li {
+  padding-left: 2%;
+  font-size: 1em;
+}
+input {
+  font-size: .8em;
+}
+html {
+  background: linear-gradient(
+    to bottom,
+    rgba(178, 197, 205, 1),
+    rgba(89, 140, 155, 1),
+    rgba(117, 157, 170, 1),
+    rgba(182, 199, 206, 1),
+    rgba(178, 197, 204, 1)
+    );
+}
+main {
+  border: 4px solid black;
+}
+form {
+  margin: 2% .5%;
+}
