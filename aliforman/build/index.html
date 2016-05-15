@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basic Angular App</title>
+  <link rel="stylesheet" type="text/css" href="/css/base.css">
+</head>
+<body data-ng-app="demoApp">
+  <main>
+    <section data-ng-controller="JawasController as jawasctrl" data-ng-init="jawasctrl.getAll()">
+      <form data-ng-submit="jawasctrl.createJawa()">
+        <label for="name">Name</label>
+        <input type="text" name="name" data-ng-model="jawasctrl.newJawa.name" placeholder="Jawa Name">
+
+        <label for="address">Address</label>
+        <input type="text" name="address" data-ng-model="jawasctrl.newJawa.address" placeholder="Jawa Address">
+
+        <label for="email">Email</label>
+        <input type="text" name="email" data-ng-model="jawasctrl.newJawa.email" placeholder="Jawa Email">
+
+        <button type="submit">Create Jawa</button>
+      </form>
+
+      <ol id="jawalist">
+        <li data-ng-repeat="jawa in jawasctrl.jawas">
+          <span data-ng-if="!jawa.editing">{{jawa.name}}</span>
+          <span>{{jawa.address}}</span>
+          <span>{{jawa.email}}</span>
+
+          <form data-ng-if="jawa.editing" data-ng-submit="jawasctrl.updateJawa(jawa)">
+            <label for="name">Name</label>
+            <input type="text" name="name" data-ng-model="jawa.name">
+
+            <label for="address">Address</label>
+            <input type="text" name="address" data-ng-model="jawa.address">
+
+            <label for="email">Email</label>
+            <input type="text" name="email" data-ng-model="jawa.email">
+
+            <button type="submit">Update</button>
+            <button data-ng-click="jawasctrl.cancelJawa(jawa)">Cancel</button>
+          </form>
+
+          <button data-ng-if="!jawa.editing" data-ng-click="jawasctrl.editJawa(jawa)">Edit</button>
+          <button data-ng-click="jawasctrl.removeJawa(jawa)">Delete Jawa Info</button>
+        </li>
+      </ol>
+    </section>
+    <hr />
+    <section data-ng-controller="DroidsController as droidsctrl" data-ng-init="droidsctrl.getAll()">
+      <form data-ng-submit="droidsctrl.createDroid()">
+        <label for="name">Name</label>
+        <input type="text" name="name" data-ng-model="droidsctrl.newDroid.name" placeholder="Droid Name">
+
+        <label for="address">Address</label>
+        <input type="text" name="address" data-ng-model="droidsctrl.newDroid.address" placeholder="Droid Address">
+
+        <label for="email">Email</label>
+        <input type="text" name="email" data-ng-model="droidsctrl.newDroid.email" placeholder="Droid Email">
+
+        <button type="submit">Create Droid</button>
+      </form>
+
+      <ol id="droidlist">
+        <li data-ng-repeat="droid in droidsctrl.droids">
+          <span data-ng-if="!droid.editing">{{droid.name}}</span>
+          <span>{{droid.address}}</span>
+          <span>{{droid.email}}</span>
+
+          <form data-ng-if="droid.editing" data-ng-submit="droidsctrl.updateDroid(droid)">
+            <label for="name">Name</label>
+            <input type="text" name="name" data-ng-model="droid.name">
+
+            <label for="address">Address</label>
+            <input type="text" name="address" data-ng-model="droid.address">
+
+            <label for="email">Email</label>
+            <input type="text" name="email" data-ng-model="droid.email">
+
+            <button type="submit">Update</button>
+            <button data-ng-click="droidsctrl.cancelDroid(droid)">Cancel</button>
+          </form>
+
+          <button data-ng-if="!droid.editing" data-ng-click="droidsctrl.editDroid(droid)">Edit</button>
+          <button data-ng-click="droidsctrl.removeDroid(droid)">Delete Droid Info</button>
+        </li>
+      </ol>
+    </section>
+  </main>
+  <script src="./bundle.js"></script>
+</body>
+</html>
