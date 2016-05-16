@@ -1,9 +1,21 @@
 const gulp = require('gulp');
 const webpack = require('webpack-stream');
 const eslint = require('gulp-eslint');
+const mongoose = require('mongoose');
+const protractor = require('gulp-protractor').protractor;
+const cp = require('child_process');
+const webdriverUpdate = require('gulp-protractor').webdriver_update;
+const mongoUri = 'mongodb://localhost/test_server';
+var children = [];
 
 var client = ['**.js', 'app/**/*.js', '!node_modules/**', '!build/**'];
 var server = ['server/**/*.js', '!**/node_modules/**', '!**/db/*'];
+
+function killCp() {
+  children.forEach((child) => {
+    child.kill('SIGTERM');
+  });
+}
 
 gulp.task('webpack:dev', () => {
   gulp.src('app/js/entry.js')
@@ -21,9 +33,49 @@ gulp.task('static:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('webdriverUpdate', webdriverUpdate);
+
+gulp.task('mongoDb:test', (done) => {
+  children.push(cp.spawn('mongod'));
+  setTimeout(done, 1000);
+});
+
+gulp.task('dropTestDb', ['mongoDb:test'], (done) => {
+  mongoose.connect(mongoUri, () => {
+    mongoose.connection.db.dropDatabase(() => {
+      mongoose.disconnect(done);
+    });
+  });
+});
+
+gulp.task('startservers:test', ['dropTestDb'], (done) => {
+  children.push(cp.fork('server.js'));
+  children.push(cp.fork('server/index', [], { env: { MONGODB_URI: mongoUri } }));
+  setTimeout(done, 1000);
+});
+
+gulp.task('protractor:test', ['build:dev', 'webdriverUpdate', 'startservers:test'], () => {
+  gulp.src('test/integration/*_spec.js')
+    .pipe(protractor({
+      configFile: 'test/integration/config.js'
+    }))
+    .on('end', () => {
+      killCp();
+    })
+    .on('error', () => {
+      killCp();
+    });
+});
+
 gulp.task('lint:client', () => {
   gulp.src(client)
     .pipe(eslint('app/.eslintrc.json'))
+    .pipe(eslint.format());
+});
+
+gulp.task('lint:test', () => {
+  gulp.src('test/**/*.js')
+    .pipe(eslint('test/.eslintrc.json'))
     .pipe(eslint.format());
 });
 
@@ -34,5 +86,6 @@ gulp.task('lint:server', () => {
 });
 
 gulp.task('build:dev', ['webpack:dev', 'static:dev']);
-gulp.task('lint', ['lint:client', 'lint:server']);
-gulp.task('default', ['build:dev', 'lint']);
+gulp.task('lint', ['lint:client', 'lint:server', 'lint:test']);
+gulp.task('test', ['protractor:test']);
+gulp.task('default', ['build:dev', 'lint', 'test']);

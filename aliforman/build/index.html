@@ -18,14 +18,12 @@
         <label for="email">Email</label>
         <input type="text" name="email" data-ng-model="jawasctrl.newJawa.email" placeholder="Jawa Email">
 
-        <button type="submit">Create Jawa</button>
+        <button type="submit" id="newjawa">Create Jawa</button>
       </form>
 
       <ol id="jawalist">
         <li data-ng-repeat="jawa in jawasctrl.jawas">
-          <span data-ng-if="!jawa.editing">{{jawa.name}}</span>
-          <span>{{jawa.address}}</span>
-          <span>{{jawa.email}}</span>
+          <span data-ng-if="!jawa.editing">{{jawa.name}} | {{jawa.address}} | {{jawa.email}}</span>
 
           <form data-ng-if="jawa.editing" data-ng-submit="jawasctrl.updateJawa(jawa)">
             <label for="name">Name</label>
@@ -58,14 +56,12 @@
         <label for="email">Email</label>
         <input type="text" name="email" data-ng-model="droidsctrl.newDroid.email" placeholder="Droid Email">
 
-        <button type="submit">Create Droid</button>
+        <button type="submit" id="newdroid">Create Droid</button>
       </form>
 
       <ol id="droidlist">
         <li data-ng-repeat="droid in droidsctrl.droids">
-          <span data-ng-if="!droid.editing">{{droid.name}}</span>
-          <span>{{droid.address}}</span>
-          <span>{{droid.email}}</span>
+          <span data-ng-if="!droid.editing">{{droid.name}} | {{droid.address}} | {{droid.email}}</span>
 
           <form data-ng-if="droid.editing" data-ng-submit="droidsctrl.updateDroid(droid)">
             <label for="name">Name</label>
