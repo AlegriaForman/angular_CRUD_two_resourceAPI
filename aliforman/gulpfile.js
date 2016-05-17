@@ -50,7 +50,6 @@ gulp.task('webpack:karma', () => {
     .pipe(gulp.dest('./test'));
 });
 
-
 gulp.task('static:dev', () => {
   gulp.src(['app/**/*.html', 'app/**/*.css'])
     .pipe(gulp.dest('./build'));
