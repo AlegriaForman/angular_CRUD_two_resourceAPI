@@ -17,4 +17,4 @@
 - Type 'gulp webpack:karma' for unit testing.
 - Then type 'karma start'.
 
-### Please note that you may occasionally have an ECONNREFUSED error on the selenium server when running a test. To terminate the selenium server, make sure to type 'ps ax | grep selenium' on the terminal, then type ' kill 4752' (the number from your grep) before performing another test. 
+#### Please note that you may occasionally have an ECONNREFUSED error on the selenium server when running a test. To terminate the selenium server, make sure to type 'ps ax | grep selenium' on the terminal, then type ' kill 4752' (the number from your grep) before performing another test. 
