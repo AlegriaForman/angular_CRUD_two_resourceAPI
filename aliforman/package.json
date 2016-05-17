@@ -26,11 +26,16 @@
   },
   "devDependencies": {
     "angular": "^1.5.5",
+    "angular-mocks": "^1.5.5",
     "babel": "^6.5.2",
     "babel-core": "^6.8.0",
     "gulp": "^3.9.1",
     "gulp-eslint": "^2.0.0",
     "gulp-protractor": "^2.3.0",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
     "protractor": "^3.3.0",
     "webpack-stream": "^3.2.0"
   }
