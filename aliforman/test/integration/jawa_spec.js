@@ -6,7 +6,7 @@ describe('all the jawas', () => {
     element(by.model('jawasctrl.newJawa.email')).sendKeys('taz@gmail.com');
     element(by.id('newjawa')).click();
     var elName = element(by.repeater('jawa in jawasctrl.jawas').row(0).column('name'));
-    
+
     elName.getText().then((text) => {
       expect(text).toEqual('Taz | Naboo | taz@gmail.com');
     });

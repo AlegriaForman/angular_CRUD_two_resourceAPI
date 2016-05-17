@@ -4,12 +4,12 @@ const eslint = require('gulp-eslint');
 const mongoose = require('mongoose');
 const protractor = require('gulp-protractor').protractor;
 const cp = require('child_process');
-const webdriverUpdate = require('gulp-protractor').webdriver_update;
 const mongoUri = 'mongodb://localhost/test_server';
 var children = [];
 
-var client = ['**.js', 'app/**/*.js', '!node_modules/**', '!build/**'];
+var client = ['server.js', 'app/**/*.js', '!node_modules/**', '!build/**'];
 var server = ['server/**/*.js', '!**/node_modules/**', '!**/db/*'];
+var jawoid = ['test/integration/**.js', 'test/unit/**.js','!test/**bundle.**'];
 
 function killCp() {
   children.forEach((child) => {
@@ -28,12 +28,21 @@ gulp.task('webpack:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('webpack:protractor', () => {
+  gulp.src('test/integration/**.js')
+    .pipe(webpack({
+      devtool: 'source-map',
+      output: {
+        filename: 'pro_bundle.js'
+      }
+    }))
+    .pipe(gulp.dest('./test'));
+});
+
 gulp.task('static:dev', () => {
   gulp.src(['app/**/*.html', 'app/**/*.css'])
     .pipe(gulp.dest('./build'));
 });
-
-gulp.task('webdriverUpdate', webdriverUpdate);
 
 gulp.task('mongoDb:test', (done) => {
   children.push(cp.spawn('mongod'));
@@ -48,13 +57,14 @@ gulp.task('dropTestDb', ['mongoDb:test'], (done) => {
   });
 });
 
-gulp.task('startservers:test', ['dropTestDb'], (done) => {
+gulp.task('startservers:test', (done) => {
   children.push(cp.fork('server.js'));
+  children.push(cp.spawn('webdriver-manager', ['start']));
   children.push(cp.fork('server/index', [], { env: { MONGODB_URI: mongoUri } }));
   setTimeout(done, 1000);
 });
 
-gulp.task('protractor:test', ['build:dev', 'webdriverUpdate', 'startservers:test'], () => {
+gulp.task('protractor:test', ['build:dev', 'startservers:test', 'dropTestDb'], () => {
   gulp.src('test/integration/*_spec.js')
     .pipe(protractor({
       configFile: 'test/integration/config.js'
@@ -74,7 +84,7 @@ gulp.task('lint:client', () => {
 });
 
 gulp.task('lint:test', () => {
-  gulp.src('test/**/*.js')
+  gulp.src(jawoid)
     .pipe(eslint('test/.eslintrc.json'))
     .pipe(eslint.format());
 });
@@ -87,5 +97,5 @@ gulp.task('lint:server', () => {
 
 gulp.task('build:dev', ['webpack:dev', 'static:dev']);
 gulp.task('lint', ['lint:client', 'lint:server', 'lint:test']);
-gulp.task('test', ['protractor:test']);
+gulp.task('test', ['protractor:test', 'webpack:protractor']);
 gulp.task('default', ['build:dev', 'lint', 'test']);
