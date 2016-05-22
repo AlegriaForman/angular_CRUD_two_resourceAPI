@@ -28,6 +28,25 @@ gulp.task('webpack:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('webpack:test', function() {
+  return gulp.src('test/unit/test_entry.js')
+    .pipe(webpack({
+      devtool: 'source-map',
+      output: {
+        filename: 'entry_bundle.js'
+      },
+      module: {
+        loaders: [
+          {
+            test: /\.html$/,
+            loader: 'html'
+          }
+        ]
+      }
+    }))
+    .pipe(gulp.dest('test/'));
+});
+
 gulp.task('webpack:protractor', () => {
   gulp.src('test/integration/**.js')
     .pipe(webpack({
