@@ -34433,7 +34433,7 @@
 	    expect(typeof droidsctrl.getAll).toBe('function');
 	  });
 	
-	  describe('CRUD tests', () => {
+	   describe('CRUD tests', () => {
 	    var $httpBackend;
 	    var jawasctrl;
 	    beforeEach(angular.mock.inject((_$httpBackend_) => {
@@ -34511,7 +34511,7 @@
 	    expect(typeof droidsctrl.getAll).toBe('function');
 	  });
 	
-	  describe('CRUD tests', () => {
+	   describe('CRUD tests', () => {
 	    var $httpBackend;
 	    var droidsctrl;
 	    beforeEach(angular.mock.inject((_$httpBackend_) => {
@@ -34566,4 +34566,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=karma_bundle.js.map
+//# sourceMappingURL=entry_bundle.js.map

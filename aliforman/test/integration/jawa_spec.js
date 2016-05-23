@@ -1,9 +1,9 @@
 describe('all the jawas', () => {
   it('it should create a jawa information', () => {
     browser.get('http://localhost:5000');
-    element(by.model('jawasctrl.newJawa.name')).sendKeys('Taz');
-    element(by.model('jawasctrl.newJawa.address')).sendKeys('Naboo');
-    element(by.model('jawasctrl.newJawa.email')).sendKeys('taz@gmail.com');
+    element(by.model('jawasctrl.name')).sendKeys('Taz');
+    element(by.model('jawasctrl.address')).sendKeys('Naboo');
+    element(by.model('jawasctrl.email')).sendKeys('taz@gmail.com');
     element(by.id('newjawa')).click();
     var elName = element(by.repeater('jawa in jawasctrl.jawas').row(0).column('name'));
 

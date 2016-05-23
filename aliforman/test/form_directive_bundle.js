@@ -44,25 +44,49 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const angular = __webpack_require__(1);
-	__webpack_require__(3);
-	__webpack_require__(4);
-	__webpack_require__(20);
-	__webpack_require__(21);
-	__webpack_require__(22);
-	__webpack_require__(23);
+	__webpack_require__(1);
+	const angular = __webpack_require__(2);
+	__webpack_require__(19);
+	
+	describe('it should test the controller', () => {
+	  var JawasController;
+	  it('should have a test', () => {
+	    expect(false).toBe(false);
+	  });
+	
+	  beforeEach(angular.mock.module('demoApp'));
+	  beforeEach(angular.mock.inject(function($controller) {
+	    JawasController = $controller('JawasController');
+	  }));
+	
+	   it('should construct a controller', () => {
+	    expect(typeof JawasController).toBe('object');
+	    expect(typeof JawasController.createJawa).toBe('function');
+	  });
+	});
 
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(2);
-	module.exports = angular;
+	const angular = __webpack_require__(2);
+	const demoApp = angular.module('demoApp', []);
+	
+	__webpack_require__(4)(demoApp);
+	__webpack_require__(13)(demoApp);
 
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(3);
+	module.exports = angular;
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	/**
@@ -30935,7 +30959,310 @@
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 3 */
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(5)(app);
+	  __webpack_require__(10)(app);
+	};
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(6)(app);
+	};
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var handleError = __webpack_require__(7).handleError;
+	var baseUrl = __webpack_require__(9).baseUrl;
+	
+	module.exports = function(app) {
+	  app.controller('JawasController', ['$http', function($http) {
+	    this.jawas = [];
+	    var originalJawa = {};
+	
+	    this.getAll = () => {
+	      $http.get(baseUrl + '/api/jawas')
+	        .then((res) => {
+	          this.jawas = res.data;
+	        }, handleError.bind(this));
+	    };
+	    this.createJawa = () => {
+	      $http.post(baseUrl + '/api/jawas', this.newJawa)
+	        .then((res) => {
+	          this.jawas.push(res.data);
+	          this.newJawa = null;
+	        }, handleError.bind(this));
+	    };
+	    this.updateJawa = (jawa) => {
+	      $http.put(baseUrl + '/api/jawas/' + jawa._id, jawa)
+	        .then(() => {
+	          jawa.editing = false;
+	        }, handleError.bind(this));
+	    };
+	    this.removeJawa = (jawa) => {
+	      $http.delete(baseUrl + '/api/jawas/' + jawa._id)
+	        .then(() => {
+	          this.jawas.splice(this.jawas.indexOf(jawa), 1);
+	        }, handleError.bind(this));
+	    };
+	    this.cancelJawa = (jawa) => {
+	      jawa.editing = false;
+	      jawa.name = originalJawa.name;
+	      jawa.address = originalJawa.address;
+	      jawa.email = originalJawa.email;
+	    };
+	    this.editJawa = (jawa) => {
+	      jawa.editing = true;
+	      originalJawa.name = jawa.name;
+	      originalJawa.address = jawa.address;
+	      originalJawa.email = jawa.email;
+	    };
+	  }]);
+	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = {
+	  handleError: __webpack_require__(8)
+	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	module.exports = function(error) {
+	  console.log(error);
+	  this.errors = (this.errors || []).push(error);
+	};
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  baseUrl: 'http://localhost:3000'
+	};
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(11)(app);
+	  __webpack_require__(12)(app);
+	};
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.directive('jawaListItem', function() {
+	    return {
+	      restrict: 'EAC',
+	      replace: true,
+	      require: '^ngController',
+	      transclude: true,
+	      templateUrl: '/templates/jawa_list_item.html',
+	      scope: {
+	        jawa: '='
+	      },
+	      link: function(scope, element, attrs, controller) {
+	        scope.delete = controller.removeJawa;
+	        scope.edit = controller.editJawa;
+	        scope.cancel = controller.editJawa;
+	
+	      }
+	    };
+	  });
+	};
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.directive('jawaForm', function() {
+	    return {
+	      restrict: 'EAC',
+	      require: '^ngController',
+	      transclude: true,
+	      templateUrl: '/templates/jawa_form.html',
+	      scope: {
+	        jawa: '=',
+	        buttonText: '@',
+	        crud: '@'
+	      },
+	      link: function(scope, element, attrs, controller) {
+	        var cruds = {
+	          update: controller.updateJawa,
+	          create: controller.createJawa,
+	          cancel: controller.cancelJawa,
+	          edit: controller.editJawa
+	        };
+	        scope.save = cruds[scope.crud];
+	      }
+	    };
+	  });
+	};
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(14)(app);
+	  __webpack_require__(16)(app);
+	};
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(15)(app);
+	};
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var handleError = __webpack_require__(7).handleError;
+	var baseUrl = __webpack_require__(9).baseUrl;
+	
+	module.exports = function(app) {
+	  app.controller('DroidsController', ['$http', function($http) {
+	    this.droids = [];
+	    var originalDroid = {};
+	
+	    this.getAll = () => {
+	      $http.get(baseUrl + '/api/droids')
+	        .then((res) => {
+	          this.droids = res.data;
+	        }, handleError.bind(this));
+	    };
+	    this.createDroid = () => {
+	      $http.post(baseUrl + '/api/droids', this.newDroid)
+	        .then((res) => {
+	          this.droids.push(res.data);
+	          this.newDroid = null;
+	        }, handleError.bind(this));
+	    };
+	    this.updateDroid = (droid) => {
+	      $http.put(baseUrl + '/api/droids/' + droid._id, droid)
+	        .then(() => {
+	          droid.editing = false;
+	        }, handleError.bind(this));
+	    };
+	    this.removeDroid = (droid) => {
+	      $http.delete(baseUrl + '/api/droids/' + droid._id)
+	        .then(() => {
+	          this.droids.splice(this.droids.indexOf(droid), 1);
+	        }, handleError.bind(this));
+	    };
+	    this.cancelDroid = (droid) => {
+	      droid.editing = false;
+	      droid.name = originalDroid.name;
+	      droid.address = originalDroid.address;
+	      droid.email = originalDroid.email;
+	    };
+	    this.editDroid = (droid) => {
+	      droid.editing = true;
+	      originalDroid.name = droid.name;
+	      originalDroid.address = droid.address;
+	      originalDroid.email = droid.email;
+	    };
+	  }]);
+	};
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(app) {
+	  __webpack_require__(17)(app);
+	  __webpack_require__(18)(app);
+	};
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.directive('droidListItem', function() {
+	    return {
+	      restrict: 'EAC',
+	      replace: true,
+	      require: '^ngController',
+	      transclude: true,
+	      templateUrl: '/templates/droid_list_item.html',
+	      scope: {
+	        droid: '='
+	      },
+	      link: function(scope, element, attrs, controller) {
+	        scope.delete = controller.removeDroid;
+	        scope.edit = controller.editDroid;
+	        scope.cancel = controller.editDroid;
+	      }
+	    };
+	  });
+	};
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.directive('droidForm', function() {
+	    return {
+	      restrict: 'EAC',
+	      require: '^ngController',
+	      transclude: true,
+	      templateUrl: '/templates/droid_form.html',
+	      scope: {
+	        droid: '=',
+	        buttonText: '@',
+	        crud: '@'
+	      },
+	      link: function(scope, element, attrs, controller) {
+	        var cruds = {
+	          update: controller.updateDroid,
+	          create: controller.createDroid,
+	          cancel: controller.cancelDroid,
+	          edit: controller.editDroid
+	        };
+	        scope.save = cruds[scope.crud];
+	      }
+	    };
+	  });
+	};
+
+
+/***/ },
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -33946,624 +34273,6 @@
 	})(window, window.angular);
 
 
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	const angular = __webpack_require__(1);
-	const demoApp = angular.module('demoApp', []);
-	
-	__webpack_require__(5)(demoApp);
-	__webpack_require__(14)(demoApp);
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(6)(app);
-	  __webpack_require__(11)(app);
-	};
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(7)(app);
-	};
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var handleError = __webpack_require__(8).handleError;
-	var baseUrl = __webpack_require__(10).baseUrl;
-	
-	module.exports = function(app) {
-	  app.controller('JawasController', ['$http', function($http) {
-	    this.jawas = [];
-	    var originalJawa = {};
-	
-	    this.getAll = () => {
-	      $http.get(baseUrl + '/api/jawas')
-	        .then((res) => {
-	          this.jawas = res.data;
-	        }, handleError.bind(this));
-	    };
-	    this.createJawa = () => {
-	      $http.post(baseUrl + '/api/jawas', this.newJawa)
-	        .then((res) => {
-	          this.jawas.push(res.data);
-	          this.newJawa = null;
-	        }, handleError.bind(this));
-	    };
-	    this.updateJawa = (jawa) => {
-	      $http.put(baseUrl + '/api/jawas/' + jawa._id, jawa)
-	        .then(() => {
-	          jawa.editing = false;
-	        }, handleError.bind(this));
-	    };
-	    this.removeJawa = (jawa) => {
-	      $http.delete(baseUrl + '/api/jawas/' + jawa._id)
-	        .then(() => {
-	          this.jawas.splice(this.jawas.indexOf(jawa), 1);
-	        }, handleError.bind(this));
-	    };
-	    this.cancelJawa = (jawa) => {
-	      jawa.editing = false;
-	      jawa.name = originalJawa.name;
-	      jawa.address = originalJawa.address;
-	      jawa.email = originalJawa.email;
-	    };
-	    this.editJawa = (jawa) => {
-	      jawa.editing = true;
-	      originalJawa.name = jawa.name;
-	      originalJawa.address = jawa.address;
-	      originalJawa.email = jawa.email;
-	    };
-	  }]);
-	};
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = {
-	  handleError: __webpack_require__(9)
-	};
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	module.exports = function(error) {
-	  console.log(error);
-	  this.errors = (this.errors || []).push(error);
-	};
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  baseUrl: 'http://localhost:3000'
-	};
-
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(12)(app);
-	  __webpack_require__(13)(app);
-	};
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	module.exports = function(app) {
-	  app.directive('jawaListItem', function() {
-	    return {
-	      restrict: 'EAC',
-	      replace: true,
-	      require: '^ngController',
-	      transclude: true,
-	      templateUrl: '/templates/jawa_list_item.html',
-	      scope: {
-	        jawa: '='
-	      },
-	      link: function(scope, element, attrs, controller) {
-	        scope.delete = controller.removeJawa;
-	        scope.edit = controller.editJawa;
-	        scope.cancel = controller.editJawa;
-	
-	      }
-	    };
-	  });
-	};
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	module.exports = function(app) {
-	  app.directive('jawaForm', function() {
-	    return {
-	      restrict: 'EAC',
-	      require: '^ngController',
-	      transclude: true,
-	      templateUrl: '/templates/jawa_form.html',
-	      scope: {
-	        jawa: '=',
-	        buttonText: '@',
-	        crud: '@'
-	      },
-	      link: function(scope, element, attrs, controller) {
-	        var cruds = {
-	          update: controller.updateJawa,
-	          create: controller.createJawa,
-	          cancel: controller.cancelJawa,
-	          edit: controller.editJawa
-	        };
-	        scope.save = cruds[scope.crud];
-	      }
-	    };
-	  });
-	};
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(15)(app);
-	  __webpack_require__(17)(app);
-	};
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(16)(app);
-	};
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var handleError = __webpack_require__(8).handleError;
-	var baseUrl = __webpack_require__(10).baseUrl;
-	
-	module.exports = function(app) {
-	  app.controller('DroidsController', ['$http', function($http) {
-	    this.droids = [];
-	    var originalDroid = {};
-	
-	    this.getAll = () => {
-	      $http.get(baseUrl + '/api/droids')
-	        .then((res) => {
-	          this.droids = res.data;
-	        }, handleError.bind(this));
-	    };
-	    this.createDroid = () => {
-	      $http.post(baseUrl + '/api/droids', this.newDroid)
-	        .then((res) => {
-	          this.droids.push(res.data);
-	          this.newDroid = null;
-	        }, handleError.bind(this));
-	    };
-	    this.updateDroid = (droid) => {
-	      $http.put(baseUrl + '/api/droids/' + droid._id, droid)
-	        .then(() => {
-	          droid.editing = false;
-	        }, handleError.bind(this));
-	    };
-	    this.removeDroid = (droid) => {
-	      $http.delete(baseUrl + '/api/droids/' + droid._id)
-	        .then(() => {
-	          this.droids.splice(this.droids.indexOf(droid), 1);
-	        }, handleError.bind(this));
-	    };
-	    this.cancelDroid = (droid) => {
-	      droid.editing = false;
-	      droid.name = originalDroid.name;
-	      droid.address = originalDroid.address;
-	      droid.email = originalDroid.email;
-	    };
-	    this.editDroid = (droid) => {
-	      droid.editing = true;
-	      originalDroid.name = droid.name;
-	      originalDroid.address = droid.address;
-	      originalDroid.email = droid.email;
-	    };
-	  }]);
-	};
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(app) {
-	  __webpack_require__(18)(app);
-	  __webpack_require__(19)(app);
-	};
-
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	module.exports = function(app) {
-	  app.directive('droidListItem', function() {
-	    return {
-	      restrict: 'EAC',
-	      replace: true,
-	      require: '^ngController',
-	      transclude: true,
-	      templateUrl: '/templates/droid_list_item.html',
-	      scope: {
-	        droid: '='
-	      },
-	      link: function(scope, element, attrs, controller) {
-	        scope.delete = controller.removeDroid;
-	        scope.edit = controller.editDroid;
-	        scope.cancel = controller.editDroid;
-	      }
-	    };
-	  });
-	};
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	module.exports = function(app) {
-	  app.directive('droidForm', function() {
-	    return {
-	      restrict: 'EAC',
-	      require: '^ngController',
-	      transclude: true,
-	      templateUrl: '/templates/droid_form.html',
-	      scope: {
-	        droid: '=',
-	        buttonText: '@',
-	        crud: '@'
-	      },
-	      link: function(scope, element, attrs, controller) {
-	        var cruds = {
-	          update: controller.updateDroid,
-	          create: controller.createDroid,
-	          cancel: controller.cancelDroid,
-	          edit: controller.editDroid
-	        };
-	        scope.save = cruds[scope.crud];
-	      }
-	    };
-	  });
-	};
-
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var angular = __webpack_require__(1);
-	__webpack_require__(3);
-	
-	describe('jawas controller', () => {
-	  var $controller;
-	
-	  beforeEach(angular.mock.module('demoApp'));
-	
-	  beforeEach(angular.mock.inject((_$controller_) => {
-	    $controller = _$controller_;
-	  }));
-	
-	  it('should be a jawa controller', () => {
-	    var jawasctrl = $controller('JawasController');
-	    expect(typeof jawasctrl).toBe('object');
-	    expect(typeof jawasctrl.getAll).toBe('function');
-	  });
-	
-	  describe('REST functionality', () => {
-	    var $httpBackend;
-	    var jawasctrl;
-	    beforeEach(angular.mock.inject((_$httpBackend_) => {
-	      $httpBackend = _$httpBackend_;
-	      jawasctrl = $controller('JawasController');
-	    }));
-	
-	    afterEach(() => {
-	      $httpBackend.verifyNoOutstandingExpectation();
-	      $httpBackend.verifyNoOutstandingRequest();
-	    });
-	
-	    it('should send a GET jawas', () => {
-	      $httpBackend.expectGET('http://localhost:3000/api/jawas').respond(200, [{ name: 'Jax' }]);
-	      jawasctrl.getAll();
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas.length).toBe(1);
-	      expect(jawasctrl.jawas[0].name).toBe('Jax');
-	    });
-	
-	    it('should create jawa info', () => {
-	      $httpBackend.expectPOST('http://localhost:3000/api/jawas', { name: 'Kuru1' }).respond(200, { name: 'Kuru2' }); // eslint-disable-line
-	      expect(jawasctrl.jawas.length).toBe(0);
-	      jawasctrl.newJawa = { name: 'Kuru1' };
-	      jawasctrl.createJawa();
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas[0].name).toBe('Kuru2');
-	      expect(jawasctrl.newJawa).toBe(null);
-	    });
-	
-	    it('should update jawa', () => {
-	      $httpBackend.expectPUT('http://localhost:3000/api/jawas/1', { name: 'Kuru Changed', editing: true, _id: 1 }).respond(200); // eslint-disable-line
-	
-	      jawasctrl.jawas = [{ name: 'Jax', editing: true, _id: 1 }];
-	      jawasctrl.jawas[0].name = 'Kuru Changed';
-	      jawasctrl.updateJawa(jawasctrl.jawas[0]);
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas[0].editing).toBe(false);
-	    });
-	
-	    it('should delete jawa info', () => {
-	      $httpBackend.expectDELETE('http://localhost:3000/api/jawas/1').respond(200);
-	      jawasctrl.jawas = [{ name: 'Kuru', _id: 1 }];
-	      jawasctrl.removeJawa(jawasctrl.jawas[0]);
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas.length).toBe(0);
-	    });
-	  });
-	});
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var angular = __webpack_require__(1);
-	__webpack_require__(3);
-	
-	describe('droids controller', () => {
-	  var $controller;
-	
-	  beforeEach(angular.mock.module('demoApp'));
-	
-	  beforeEach(angular.mock.inject((_$controller_) => {
-	    $controller = _$controller_;
-	  }));
-	
-	  it('should be a droid controller', () => {
-	    var droidsctrl = $controller('DroidsController');
-	    expect(typeof droidsctrl).toBe('object');
-	    expect(typeof droidsctrl.getAll).toBe('function');
-	  });
-	
-	  describe('REST functionality', () => {
-	    var $httpBackend;
-	    var droidsctrl;
-	    beforeEach(angular.mock.inject((_$httpBackend_) => {
-	      $httpBackend = _$httpBackend_;
-	      droidsctrl = $controller('DroidsController');
-	    }));
-	
-	    afterEach(() => {
-	      $httpBackend.verifyNoOutstandingExpectation();
-	      $httpBackend.verifyNoOutstandingRequest();
-	    });
-	
-	    it('should send a GET droids', () => {
-	      $httpBackend.expectGET('http://localhost:3000/api/droids').respond(200, [{ name: 'X7G0' }]);
-	      droidsctrl.getAll();
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids.length).toBe(1);
-	      expect(droidsctrl.droids[0].name).toBe('X7G0');
-	    });
-	
-	    it('should create droid info', () => {
-	      $httpBackend.expectPOST('http://localhost:3000/api/droids', { name: 'F34H' }).respond(200, { name: 'B0A1' }); // eslint-disable-line
-	      expect(droidsctrl.droids.length).toBe(0);
-	      droidsctrl.newDroid = { name: 'F34H' };
-	      droidsctrl.createDroid();
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids[0].name).toBe('B0A1');
-	      expect(droidsctrl.newDroid).toBe(null);
-	    });
-	
-	    it('should update droid', () => {
-	      $httpBackend.expectPUT('http://localhost:3000/api/droids/1', { name: 'X7G0Z', editing: true, _id: 1 }).respond(200); // eslint-disable-line
-	
-	      droidsctrl.droids = [ { name: 'X7G0', editing: true, _id: 1 } ];
-	      droidsctrl.droids[0].name = 'X7G0Z';
-	      droidsctrl.updateDroid(droidsctrl.droids[0]);
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids[0].editing).toBe(false);
-	    });
-	
-	    it('should delete droid info', () => {
-	      $httpBackend.expectDELETE('http://localhost:3000/api/droids/1').respond(200);
-	      droidsctrl.droids = [{ name: 'F34H', _id: 1 }];
-	      droidsctrl.removeDroid(droidsctrl.droids[0]);
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids.length).toBe(0);
-	    });
-	  });
-	});
-
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(4);
-	const angular = __webpack_require__(1);
-	__webpack_require__(3);
-	
-	describe('it should test the controller', () => {
-	  var JawasController;
-	  it('should have a test', () => {
-	    expect(false).toBe(false);
-	  });
-	
-	  beforeEach(angular.mock.module('demoApp'));
-	  beforeEach(angular.mock.inject((_$controller_) => {
-	    $controller = _$controller_;
-	  }));
-	
-	  it('should be a droid controller', () => {
-	    var droidsctrl = $controller('DroidsController');
-	    expect(typeof droidsctrl).toBe('object');
-	    expect(typeof droidsctrl.getAll).toBe('function');
-	  });
-	
-	  describe('CRUD tests', () => {
-	    var $httpBackend;
-	    var jawasctrl;
-	    beforeEach(angular.mock.inject((_$httpBackend_) => {
-	      $httpBackend = _$httpBackend_;
-	      jawasctrl = $controller('JawasController');
-	    }));
-	
-	    afterEach(() => {
-	      $httpBackend.verifyNoOutstandingExpectation();
-	      $httpBackend.verifyNoOutstandingRequest();
-	    });
-	
-	    it('should send a GET jawas', () => {
-	      $httpBackend.expectGET('http://localhost:3000/api/jawas').respond(200, [{ name: 'Firo' }]);
-	      jawasctrl.getAll();
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas.length).toBe(1);
-	      expect(jawasctrl.jawas[0].name).toBe('Firo');
-	    });
-	
-	    it('should create jawa info', () => {
-	      $httpBackend.expectPOST('http://localhost:3000/api/jawas', { name: 'Dume' }).respond(200, { name: 'Dume IV' }); // eslint-disable-line
-	      expect(jawasctrl.jawas.length).toBe(0);
-	      jawasctrl.newJawa = { name: 'Dume' };
-	      jawasctrl.createJawa();
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas[0].name).toBe('Dume IV');
-	      expect(jawasctrl.newJawa).toBe(null);
-	    });
-	
-	    it('should update jawa', () => {
-	      $httpBackend.expectPUT('http://localhost:3000/api/jawas/1', { name: 'Firo II', editing: true, _id: 1 }).respond(200); // eslint-disable-line
-	
-	      jawasctrl.jawas = [{ name: 'Firo', editing: true, _id: 1 }];
-	      jawasctrl.jawas[0].name = 'Firo II';
-	      jawasctrl.updateJawa(jawasctrl.jawas[0]);
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas[0].editing).toBe(false);
-	      expect(jawasctrl.jawas.length).toBe(1);
-	    });
-	
-	    it('should delete jawa info', () => {
-	      $httpBackend.expectDELETE('http://localhost:3000/api/jawas/1').respond(200);
-	      jawasctrl.jawas = [{ name: 'Firo', _id: 1 }];
-	      jawasctrl.removeJawa(jawasctrl.jawas[0]);
-	      $httpBackend.flush();
-	      expect(jawasctrl.jawas.length).toBe(0);
-	    });
-	  });
-	});
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(4);
-	const angular = __webpack_require__(1);
-	__webpack_require__(3);
-	
-	describe('it should test the controller', () => {
-	  var DroidsController;
-	  it('should have a test', () => {
-	    expect(false).toBe(false);
-	  });
-	
-	  beforeEach(angular.mock.module('demoApp'));
-	  beforeEach(angular.mock.inject((_$controller_) => {
-	    $controller = _$controller_;
-	  }));
-	
-	  it('should be a droid controller', () => {
-	    var droidsctrl = $controller('DroidsController');
-	    expect(typeof droidsctrl).toBe('object');
-	    expect(typeof droidsctrl.getAll).toBe('function');
-	  });
-	
-	  describe('CRUD tests', () => {
-	    var $httpBackend;
-	    var droidsctrl;
-	    beforeEach(angular.mock.inject((_$httpBackend_) => {
-	      $httpBackend = _$httpBackend_;
-	      droidsctrl = $controller('DroidsController');
-	    }));
-	
-	    afterEach(() => {
-	      $httpBackend.verifyNoOutstandingExpectation();
-	      $httpBackend.verifyNoOutstandingRequest();
-	    });
-	
-	    it('should send a GET droids', () => {
-	      $httpBackend.expectGET('http://localhost:3000/api/droids').respond(200, [{ name: 'Firo' }]);
-	      droidsctrl.getAll();
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids.length).toBe(1);
-	      expect(droidsctrl.droids[0].name).toBe('Firo');
-	    });
-	
-	    it('should create jawa info', () => {
-	      $httpBackend.expectPOST('http://localhost:3000/api/droids', { name: 'Dume' }).respond(200, { name: 'Dume IV' }); // eslint-disable-line
-	      expect(droidsctrl.droids.length).toBe(0);
-	      droidsctrl.newDroid = { name: 'Dume' };
-	      droidsctrl.createDroid();
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids[0].name).toBe('Dume IV');
-	      expect(droidsctrl.newDroid).toBe(null);
-	    });
-	
-	    it('should update jawa', () => {
-	      $httpBackend.expectPUT('http://localhost:3000/api/droids/1', { name: 'Firo II', editing: true, _id: 1 }).respond(200); // eslint-disable-line
-	
-	      droidsctrl.droids = [{ name: 'Firo', editing: true, _id: 1 }];
-	      droidsctrl.droids[0].name = 'Firo II';
-	      droidsctrl.updateDroid(droidsctrl.droids[0]);
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids[0].editing).toBe(false);
-	      expect(droidsctrl.droids.length).toBe(1);
-	    });
-	
-	    it('should delete jawa info', () => {
-	      $httpBackend.expectDELETE('http://localhost:3000/api/droids/1').respond(200);
-	      droidsctrl.droids = [{ name: 'Firo', _id: 1 }];
-	      droidsctrl.removeDroid(droidsctrl.droids[0]);
-	      $httpBackend.flush();
-	      expect(droidsctrl.droids.length).toBe(0);
-	    });
-	  });
-	});
-
-
 /***/ }
 /******/ ]);
-//# sourceMappingURL=karma_bundle.js.map
+//# sourceMappingURL=form_directive_bundle.js.map

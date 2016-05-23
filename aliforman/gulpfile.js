@@ -9,7 +9,6 @@ var children = [];
 
 var client = ['server.js', 'app/**/*.js', '!node_modules/**', '!build/**'];
 var server = ['server/**/*.js', '!**/node_modules/**', '!**/db/*'];
-var jawoid = ['test/integration/**.js', 'test/unit/**.js','!test/**bundle.**'];
 
 function killCp() {
   children.forEach((child) => {
@@ -28,12 +27,12 @@ gulp.task('webpack:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('webpack:test', function() {
+gulp.task('webpack:karma', function() {
   return gulp.src('test/unit/test_entry.js')
     .pipe(webpack({
       devtool: 'source-map',
       output: {
-        filename: 'entry_bundle.js'
+        filename: 'karma_bundle.js'
       },
       module: {
         loaders: [
@@ -53,17 +52,6 @@ gulp.task('webpack:protractor', () => {
       devtool: 'source-map',
       output: {
         filename: 'pro_bundle.js'
-      }
-    }))
-    .pipe(gulp.dest('./test'));
-});
-
-gulp.task('webpack:karma', () => {
-  gulp.src(['./test/unit/test_entry.js'])
-    .pipe(webpack({
-      devtool: 'source-map',
-      output: {
-        filename: 'karma_bundle.js'
       }
     }))
     .pipe(gulp.dest('./test'));
@@ -94,28 +82,9 @@ gulp.task('startservers:test', (done) => {
   setTimeout(done, 1000);
 });
 
-gulp.task('protractor:test', ['build:dev', 'startservers:test', 'dropTestDb'], () => {
-  gulp.src('test/integration/*_spec.js')
-    .pipe(protractor({
-      configFile: 'test/integration/config.js'
-    }))
-    .on('end', () => {
-      killCp();
-    })
-    .on('error', () => {
-      killCp();
-    });
-});
-
 gulp.task('lint:client', () => {
   gulp.src(client)
     .pipe(eslint('app/.eslintrc.json'))
-    .pipe(eslint.format());
-});
-
-gulp.task('lint:test', () => {
-  gulp.src(jawoid)
-    .pipe(eslint('test/.eslintrc.json'))
     .pipe(eslint.format());
 });
 
@@ -126,6 +95,6 @@ gulp.task('lint:server', () => {
 });
 
 gulp.task('build:dev', ['webpack:dev', 'static:dev']);
-gulp.task('lint', ['lint:client', 'lint:server', 'lint:test']);
-gulp.task('test', ['protractor:test', 'webpack:protractor', 'webpack:karma']);
+gulp.task('lint', ['lint:client', 'lint:server']);
+gulp.task('test', [ 'webpack:protractor', 'webpack:karma']);
 gulp.task('default', ['build:dev', 'lint', 'test']);

@@ -1,9 +1,9 @@
 describe('all the droids', () => {
   it('it should create a droid information', () => {
     browser.get('http://localhost:5000');
-    element(by.model('droidsctrl.newDroid.name')).sendKeys('R2D2');
-    element(by.model('droidsctrl.newDroid.address')).sendKeys('Imperial Planet');
-    element(by.model('droidsctrl.newDroid.email')).sendKeys('r2d2@yahoo.com');
+    element(by.model('droidsctrl.name')).sendKeys('R2D2');
+    element(by.model('droidsctrl.address')).sendKeys('Imperial Planet');
+    element(by.model('droidsctrl.email')).sendKeys('r2d2@yahoo.com');
     element(by.id('newdroid')).click();
     var elName = element(by.repeater('droid in droidsctrl.droids').row(0).column('name'));
 
