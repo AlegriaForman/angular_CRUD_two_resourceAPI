@@ -1,4 +1,6 @@
 const gulp = require('gulp');
+const sass = require('gulp-sass');
+const maps = require('gulp-sourcemaps');
 const webpack = require('webpack-stream');
 const eslint = require('gulp-eslint');
 const mongoose = require('mongoose');
@@ -62,6 +64,14 @@ gulp.task('static:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('sass:dev', () => {
+  gulp.src('app/scss/*.scss')
+  .pipe(maps.init())
+  .pipe(sass().on('error', sass.logError))
+  .pipe(maps.write('./maps'))
+  .pipe(gulp.dest('./build'));
+});
+
 gulp.task('mongoDb:test', (done) => {
   children.push(cp.spawn('mongod'));
   setTimeout(done, 1000);
@@ -94,7 +104,7 @@ gulp.task('lint:server', () => {
     .pipe(eslint.format());
 });
 
-gulp.task('build:dev', ['webpack:dev', 'static:dev']);
+gulp.task('build:dev', ['sass:dev', 'webpack:dev', 'static:dev']);
 gulp.task('lint', ['lint:client', 'lint:server']);
-gulp.task('test', [ 'webpack:protractor', 'webpack:karma']);
+gulp.task('test', ['webpack:protractor', 'webpack:karma']);
 gulp.task('default', ['build:dev', 'lint', 'test']);
