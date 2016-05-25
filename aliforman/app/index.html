@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basic Angular App</title>
+  <link rel="stylesheet" href="accordion.css">
+</head>
+<body data-ng-app="demoApp">
+  <main>
+    <button class="accordion">Jawa Section</button>
+      <div class="panel">
+        <section id="jawa-content" data-ng-controller="JawasController as jawasctrl" data-ng-init="jawasctrl.getAll()">
+          <jawa-form
+            data-button-text="New Jawa"
+            data-crud="create"
+            data-jawa="jawasctrl.newJawa">
+          </jawa-form>
+
+          <ol id="jawalist">
+            <jawa-list-item data-ng-repeat="jawa in jawasctrl.jawas" data-jawa="jawa">
+              <jawa-form
+                data-ng-if="jawa.editing"
+                data-button-text="Update Jawa"
+                data-crud="update"
+                data-jawa="jawa">
+              <button data-ng-click="jawasctrl.cancelJawa(jawa)">Cancel</button>
+              </jawa-form>
+            </jawa-list-item>
+          </ol>
+        </section>
+      </div>
+
+    <button class="accordion">Droid Section</button>
+      <div class="panel">
+        <section id="droid-content" data-ng-controller="DroidsController as droidsctrl" data-ng-init="droidsctrl.getAll()">
+          <droid-form
+            data-button-text="New Droid"
+            data-crud="create"
+            data-droid="droidsctrl.newDroid">
+          </droid-form>
+
+          <ol id="droidlist">
+            <droid-list-item data-ng-repeat="droid in droidsctrl.droids" data-droid="droid">
+              <droid-form
+                data-ng-if="droid.editing"
+                data-button-text="Update Droid"
+                data-crud="update"
+                data-droid="droid">
+              <button data-ng-click="droidsctrl.cancelDroid(droid)">Cancel</button>
+              </droid-form>
+            </droid-list-item>
+          </ol>
+        </section>
+      </div>
+  </main>
+  <script>
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+      acc[i].onclick = function(){
+          this.classList.toggle("active");
+          this.nextElementSibling.classList.toggle("show");
+    }
+  }
+  </script>
+  <script src="./bundle.js"></script>
+</body>
+</html>
