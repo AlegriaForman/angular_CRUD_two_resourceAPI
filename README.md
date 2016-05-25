@@ -1,4 +1,4 @@
-##Refactor Your Two Resource App to use Directives and add Sass
+##Refactor Your Two Resource App to use Directives and add Helper Services
 
 1. Open a terminal and type 'npm install'
 2. Type 'mongod' in your terminal to engage MongoDB.
