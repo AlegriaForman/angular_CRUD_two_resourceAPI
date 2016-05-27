@@ -1,37 +1,27 @@
+const angular = require ('angular');
 var baseUrl = require('../../config').baseUrl;
 
 module.exports = function(app) {
-  app.controller('DroidsController', ['$http', 'jawoidHandleError', function($http, jawoidHandleError) {
+  app.controller('DroidsController', ['jawoidResource', function(Resource) {
     this.droids = [];
     this.errors = [];
     var originalDroid = {};
-
-    this.getAll = function() {
-      $http.get(baseUrl + '/api/droids')
-        .then((res) => {
-          this.droids = res.data;
-        }, jawoidHandleError(this.errors, 'could not get all droid'));
-    }.bind(this);
+    var remote = new Resource(this.droids, this.errors, baseUrl + '/api/droids', {errMessages: {getAll: 'custom error message'}});
+    this.getAll = remote.getAll.bind(remote);
     this.createDroid = function() {
-      var droidName = this.newDroid.name;
-      $http.post(baseUrl + '/api/droids', this.newDroid)
-        .then((res) => {
-          this.droids.push(res.data);
+      remote.save(this.newDroid)
+        .then(() => {
           this.newDroid = null;
-        }, jawoidHandleError(this.errors, 'couls not create' + droidName));
+        });
     }.bind(this);
     this.updateDroid = function(droid) {
-      $http.put(baseUrl + '/api/droids/' + droid._id, droid)
+      remote.update(droid)
         .then(() => {
           droid.editing = false;
-        }, jawoidHandleError(this.errors, 'could not update' + droid.name));
-    }.bind(this);
-    this.removeDroid = function(droid) {
-      $http.delete(baseUrl + '/api/droids/' + droid._id)
-        .then(() => {
-          this.droids.splice(this.droids.indexOf(droid), 1);
-        }, jawoidHandleError(this.errors, 'could not delete' + droid.name));
-    }.bind(this);
+        });
+    };
+    this.removeDroid = remote.remove.bind(remote);
+
     this.cancelDroid = function(droid) {
       droid.editing = false;
       droid.name = originalDroid.name;

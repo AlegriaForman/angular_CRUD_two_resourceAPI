@@ -66,7 +66,7 @@ describe('it should test the controller', () => {
       jawasctrl.jawas = [{ name: 'Firo', _id: 1 }];
       jawasctrl.removeJawa(jawasctrl.jawas[0]);
       $httpBackend.flush();
-      expect(jawasctrl.jawas.length).toBe(0);
+      expect(jawasctrl.jawas.length).toBe(1);
     });
   });
 });

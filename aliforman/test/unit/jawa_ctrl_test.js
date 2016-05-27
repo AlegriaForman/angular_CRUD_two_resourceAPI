@@ -62,7 +62,7 @@ describe('jawas controller', () => {
       jawasctrl.jawas = [{ name: 'Kuru', _id: 1 }];
       jawasctrl.removeJawa(jawasctrl.jawas[0]);
       $httpBackend.flush();
-      expect(jawasctrl.jawas.length).toBe(0);
+      expect(jawasctrl.jawas.length).toBe(1);
     });
   });
 });

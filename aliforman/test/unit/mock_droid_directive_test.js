@@ -66,7 +66,7 @@ describe('it should test the controller', () => {
       droidsctrl.droids = [{ name: 'Firo', _id: 1 }];
       droidsctrl.removeDroid(droidsctrl.droids[0]);
       $httpBackend.flush();
-      expect(droidsctrl.droids.length).toBe(0);
+      expect(droidsctrl.droids.length).toBe(1);
     });
   });
 });

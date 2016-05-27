@@ -6,3 +6,5 @@ require('./droid_ctrl_test.js');
 require('./mock_jawa_directive_test.js');
 require('./mock_droid_directive_test.js');
 require('./handle_error_test.js');
+require('./jawa_resource_test.js');
+require('./droid_resource_test.js');
