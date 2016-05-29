@@ -1,5 +1,7 @@
+$base-color: #BFB56A;
+
 button.accordion {
-  background-color: #BFB56A;
+  background-color: lighten($base-color, 20%);
   @include borderColor;
   cursor: pointer;
   padding: 18px;
@@ -8,7 +10,7 @@ button.accordion {
   font-size: 1.5em;
   transition: 0.4s;
   &.active, &:hover {
-    background-color: #809946;
+    background-color: #{#FFFFFF - #8345BF};
   }
 }
 

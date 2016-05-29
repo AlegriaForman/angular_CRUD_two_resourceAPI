@@ -1,4 +1,7 @@
 $font: Helvetica, sans-serif;
+@function em($target, $context: 16) {
+  @return ($target/$context) * 1em;
+}
 
 html {
   background: linear-gradient(
@@ -27,6 +30,8 @@ button {
   padding: 0 5px;
   border-radius: 10px;
 }
+
 h1 {
-  font-size: 1.5em;
+  font-size: em(28);
+  margin-left: 3%;
 }
