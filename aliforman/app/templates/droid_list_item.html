@@ -1,0 +1,8 @@
+<li>
+  <ng-transclude></ng-transclude>
+  <span data-ng-if="!droid.editing">{{droid.name}} | {{droid.address}} | {{droid.email}}</span>
+  <button data-ng-if="!droid.editing" data-ng-click="edit(droid)">Edit</button>
+  <div data-ng-controller="DroidsController as droidsctrl">
+  <button data-ng-click="delete(droid); droidsctrl.minus()">Delete Droid Info</button>
+  </div>
+</li>

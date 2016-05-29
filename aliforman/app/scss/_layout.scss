@@ -1,0 +1,18 @@
+section {
+  margin: 2% 5%;
+}
+
+.facts {
+  margin: 2% 5%;
+}
+
+.info {
+  @extend .facts;
+  font-size: .7em;
+}
+
+$attr: border;
+
+.article {
+  #{$attr}-color: black;
+}
