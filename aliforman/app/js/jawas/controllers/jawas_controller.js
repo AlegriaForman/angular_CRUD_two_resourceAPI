@@ -2,7 +2,7 @@ const angular = require ('angular');
 var baseUrl = require('../../config').baseUrl;
 
 module.exports = function(app) {
-  app.controller('JawasController', ['jawoidResource', function(Resource) {
+  app.controller('JawasController', ['$rootScope', 'jawoidResource', 'counterService', function($rs, Resource, counterService) {
     this.jawas = [];
     this.errors = [];
     var originalJawa = {};
@@ -13,7 +13,7 @@ module.exports = function(app) {
         .then(() => {
           this.newJawa = null;
         });
-    }.bind(this);
+    }.bind(this, counterService);
     this.updateJawa = function(jawa) {
       remote.update(jawa)
         .then(() => {
@@ -33,5 +33,9 @@ module.exports = function(app) {
       originalJawa.address = jawa.address;
       originalJawa.email = jawa.email;
     };
+    this.counter = counterService;
+    this.getCount = counterService.getCount.bind(counterService);
+    this.add = counterService.addCount.bind(counterService);
+    this.minus = counterService.minusCount.bind(counterService);
   }]);
 };

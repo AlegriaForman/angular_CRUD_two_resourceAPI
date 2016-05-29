@@ -11,7 +11,6 @@
       <div class="panel">
         <section id="jawa-content" data-ng-controller="JawasController as jawasctrl" data-ng-init="jawasctrl.getAll()">
           <jawa-form
-            data-button-text="New Jawa"
             data-crud="create"
             data-jawa="jawasctrl.newJawa">
           </jawa-form>
@@ -34,7 +33,6 @@
       <div class="panel">
         <section id="droid-content" data-ng-controller="DroidsController as droidsctrl" data-ng-init="droidsctrl.getAll()">
           <droid-form
-            data-button-text="New Droid"
             data-crud="create"
             data-droid="droidsctrl.newDroid">
           </droid-form>
@@ -52,18 +50,11 @@
           </ol>
         </section>
       </div>
-  </main>
-  <script>
-  var acc = document.getElementsByClassName("accordion");
-  var i;
 
-  for (i = 0; i < acc.length; i++) {
-      acc[i].onclick = function(){
-          this.classList.toggle("active");
-          this.nextElementSibling.classList.toggle("show");
-    }
-  }
-  </script>
+    <div data-ng-controller="JawasController as jawasctrl">
+      <h1>TOTAL: {{ jawasctrl.counter.count }}</h1>
+    </div>
+  </main>
   <script src="./bundle.js"></script>
 </body>
 </html>

@@ -2,5 +2,7 @@
   <ng-transclude></ng-transclude>
   <span data-ng-if="!jawa.editing">{{ jawa.name }} | {{ jawa.address }} | {{ jawa.email }}</span>
   <button data-ng-if="!jawa.editing" data-ng-click="edit(jawa)">Edit</button>
-  <button data-ng-click="delete(jawa)">Delete Jawa Info</button>
+  <div data-ng-controller="JawasController as jawasctrl">
+  <button data-ng-click="delete(jawa); jawasctrl.minus()">Delete Jawa Info</button>
+  </div>
 </li>

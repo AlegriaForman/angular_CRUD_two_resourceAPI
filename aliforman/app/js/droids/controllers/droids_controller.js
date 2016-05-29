@@ -2,7 +2,7 @@ const angular = require ('angular');
 var baseUrl = require('../../config').baseUrl;
 
 module.exports = function(app) {
-  app.controller('DroidsController', ['jawoidResource', function(Resource) {
+  app.controller('DroidsController', ['$rootScope', 'jawoidResource', 'counterService', function($rs, Resource, counterService) {
     this.droids = [];
     this.errors = [];
     var originalDroid = {};
@@ -13,7 +13,7 @@ module.exports = function(app) {
         .then(() => {
           this.newDroid = null;
         });
-    }.bind(this);
+    }.bind(this, counterService);
     this.updateDroid = function(droid) {
       remote.update(droid)
         .then(() => {
@@ -34,5 +34,9 @@ module.exports = function(app) {
       originalDroid.address = droid.address;
       originalDroid.email = droid.email;
     };
+    this.counter = counterService;
+    this.getCount = counterService.getCount.bind(counterService);
+    this.add = counterService.addCount.bind(counterService);
+    this.minus = counterService.minusCount.bind(counterService);
   }]);
 };

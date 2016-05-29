@@ -7,7 +7,10 @@
 
   <label for="email">Email</label>
   <input type="text" name="email" data-ng-model="droid.email" placeholder="Droid Email">
-
-  <button type="submit" id="newdroid">{{buttonText}}</button>
+  <button data-ng-if="droid.editing" type="submit" id="newdroid">{{buttonText}}</button>
   <ng-transclude></ng-transclude>
+
+  <div data-ng-controller="DroidsController as droidsctrl">
+  <button data-ng-if="!droid.editing" id="newdroid" data-ng-click="droidsctrl.add()">Add Droid</button>
+  </div>
 </form>

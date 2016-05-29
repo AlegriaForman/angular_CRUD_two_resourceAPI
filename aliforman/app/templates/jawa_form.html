@@ -7,7 +7,10 @@
 
   <label for="email">Email</label>
   <input type="text" name="email" data-ng-model="jawa.email" placeholder="Jawa Email">
-
-  <button class="btn-{{crud}}" type="submit" id="newjawa">{{ buttonText }}</button>
+  <button data-ng-if="jawa.editing" type="submit" id="newjawa">{{buttonText}}</button>
   <ng-transclude></ng-transclude>
+
+  <div data-ng-controller="JawasController as jawasctrl">
+  <button data-ng-if="!jawa.editing" id="newjawa" data-ng-click="jawasctrl.add()">Add Jawa</button>
+  </div>
 </form>
