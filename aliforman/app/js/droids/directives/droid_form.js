@@ -1,5 +1,5 @@
 module.exports = function(app) {
-  app.directive('droidForm', function() {
+  app.directive('droidForm', () => {
     return {
       restrict: 'EAC',
       require: '^ngController',

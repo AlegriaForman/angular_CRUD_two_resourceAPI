@@ -5,7 +5,13 @@
     "es6": true
   },
   "globals": {
-    "browser": true
+    "browser": true,
+    "angular": true,
+    "require": true,
+    "__dirname": true,
+    "module": true,
+    "process": true,
+    "exports": true
   },
   "rules": {
     "indent": ["error", 2],

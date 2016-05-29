@@ -1,5 +1,5 @@
 module.exports = function(app) {
-  app.directive('jawaForm', function() {
+  app.directive('jawaForm', () => {
     return {
       restrict: 'EAC',
       require: '^ngController',

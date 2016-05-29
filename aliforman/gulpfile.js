@@ -9,7 +9,7 @@ const cp = require('child_process');
 const mongoUri = 'mongodb://localhost/test_server';
 var children = [];
 
-var client = ['server.js', 'app/**/*.js', '!node_modules/**', '!build/**'];
+var client = ['server.js', 'app/**/**/*.js', '!node_modules/**', '!build/**'];
 var server = ['server/**/*.js', '!**/node_modules/**', '!**/db/*'];
 
 function killCp() {
@@ -93,14 +93,14 @@ gulp.task('startservers:test', (done) => {
 });
 
 gulp.task('lint:client', () => {
-  gulp.src(client)
-    .pipe(eslint('app/.eslintrc.json'))
+  return gulp.src(client)
+    .pipe(eslint())
     .pipe(eslint.format());
 });
 
 gulp.task('lint:server', () => {
-  gulp.src(server)
-    .pipe(eslint('server/.eslintrc.json'))
+  return gulp.src(server)
+    .pipe(eslint())
     .pipe(eslint.format());
 });
 

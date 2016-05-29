@@ -1,5 +1,5 @@
 module.exports = function(app) {
-  app.directive('jawaListItem', function() {
+  app.directive('jawaListItem', () => {
     return {
       restrict: 'EAC',
       replace: true,
@@ -13,7 +13,6 @@ module.exports = function(app) {
         scope.delete = controller.removeJawa;
         scope.edit = controller.editJawa;
         scope.cancel = controller.editJawa;
-
       }
     };
   });

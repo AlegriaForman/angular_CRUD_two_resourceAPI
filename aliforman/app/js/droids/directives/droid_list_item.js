@@ -1,5 +1,5 @@
 module.exports = function(app) {
-  app.directive('droidListItem', function() {
+  app.directive('droidListItem', () => {
     return {
       restrict: 'EAC',
       replace: true,
