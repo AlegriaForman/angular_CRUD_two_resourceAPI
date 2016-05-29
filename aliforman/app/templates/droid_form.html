@@ -1,0 +1,16 @@
+<form data-ng-submit="save(droid)">
+  <label for="name">Name</label>
+  <input type="text" name="name" data-ng-model="droid.name" placeholder="Droid Name">
+
+  <label for="address">Address</label>
+  <input type="text" name="address" data-ng-model="droid.address" placeholder="Droid Address">
+
+  <label for="email">Email</label>
+  <input type="text" name="email" data-ng-model="droid.email" placeholder="Droid Email">
+  <button data-ng-if="droid.editing" type="submit" id="newdroid">{{buttonText}}</button>
+  <ng-transclude></ng-transclude>
+
+  <div data-ng-controller="DroidsController as droidsctrl">
+  <button data-ng-if="!droid.editing" id="newdroid" data-ng-click="droidsctrl.add()">Add Droid</button>
+  </div>
+</form>

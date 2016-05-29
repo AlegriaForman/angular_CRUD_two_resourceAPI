@@ -1,0 +1,16 @@
+<form data-ng-submit="save(jawa)">
+  <label for="name">Name</label>
+  <input type="text" name="name" data-ng-model="jawa.name" placeholder="Jawa Name">
+
+  <label for="address">Address</label>
+  <input type="text" name="address" data-ng-model="jawa.address" placeholder="Jawa Address">
+
+  <label for="email">Email</label>
+  <input type="text" name="email" data-ng-model="jawa.email" placeholder="Jawa Email">
+  <button data-ng-if="jawa.editing" type="submit" id="newjawa">{{buttonText}}</button>
+  <ng-transclude></ng-transclude>
+
+  <div data-ng-controller="JawasController as jawasctrl">
+  <button data-ng-if="!jawa.editing" id="newjawa" data-ng-click="jawasctrl.add()">Add Jawa</button>
+  </div>
+</form>
